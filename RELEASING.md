@@ -69,6 +69,24 @@ non-mutating update checks but cannot overwrite themselves.
 
 ## Image contract
 
+Internal project identifiers use `ths`: the server is `ths-server`, environment
+variables use `THS_*`, Docker resources use `ths-<instance>` and
+`com.zakura.ths.instance`, and the server database is `ths.db`. The public
+launcher remains `ths`; the Cargo launcher package and published image
+repositories retain the full `thus-spoke-zakura` project name.
+
+This rename does not migrate data or Docker resources from earlier versions.
+Stop and delete old environments with the earlier launcher before upgrading;
+the new launcher manages only resources under the new names. Custom scripts
+must use the new environment variables. The browser theme key is `ths-theme`,
+so an earlier theme preference defaults to the system setting until selected
+again.
+
+The wallet database retains `ext_tsz_treasury_cursor` and its migration UUID.
+These are persisted schema identifiers; renaming an already-applied migration
+would break existing wallets. The historical `ext_tsz_prepared_transactions`
+name remains only in a regression assertion that the removed table is absent.
+
 The launcher always selects these exact tags using its compiled Cargo version:
 
 ```text

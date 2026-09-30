@@ -252,7 +252,7 @@ impl RealWallet {
         Ok(Self {
             db: Arc::new(Mutex::new(db)),
             account_ids,
-            lightwalletd: std::env::var("TSZ_LIGHTWALLETD")
+            lightwalletd: std::env::var("THS_LIGHTWALLETD")
                 .unwrap_or_else(|_| "http://127.0.0.1:9067".into()),
         })
     }
@@ -949,6 +949,8 @@ mod treasury_sync_tests {
                                 [],
                                 |row| row.get(0),
                             )?,
+                            // Retain the historical name to detect accidental restoration
+                            // of the removed prepared-transaction extension.
                             ext.query_row(
                                 "SELECT COUNT(*) FROM sqlite_master WHERE name='ext_tsz_prepared_transactions'",
                                 [],

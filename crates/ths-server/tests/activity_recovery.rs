@@ -90,7 +90,7 @@ async fn run_live_scenario(live_scenario: LiveScenario) -> Result<()> {
         }
     };
 
-    let server = PathBuf::from(env!("CARGO_BIN_EXE_tsz-server"));
+    let server = PathBuf::from(env!("CARGO_BIN_EXE_ths-server"));
     let fixture = match RegtestStack::new(server) {
         Ok(fixture) => Arc::new(Mutex::new(fixture)),
         Err(error) => {
@@ -485,7 +485,7 @@ async fn exercise_recovery(
     );
 
     assert_read_only_persistence(
-        fixture.data_dir().join("tsz.db"),
+        fixture.data_dir().join("ths.db"),
         &persisted_broadcast,
         &expected_block_hash,
     )?;

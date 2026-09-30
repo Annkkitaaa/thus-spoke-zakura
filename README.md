@@ -260,21 +260,21 @@ live test remains ignored until explicitly selected. The node and lightwalletd
 remain real external services for that explicit invocation.
 
 ```console
-cargo test --locked --profile dev-runtime -p tsz-server --test activity_recovery --no-run
-cargo test --locked --profile dev-runtime -p tsz-server --test activity_recovery
+cargo test --locked --profile dev-runtime -p ths-server --test activity_recovery --no-run
+cargo test --locked --profile dev-runtime -p ths-server --test activity_recovery
 # The preceding command runs helper tests; the live test remains ignored.
 docker pull zakuracore/zakura:1.4.0
-docker build -f docker/lightwalletd.Dockerfile -t tsz-recovery-lightwalletd:local .
-cargo test --locked --profile dev-runtime -p tsz-server --test activity_recovery -- --ignored --exact broadcast_recovers_after_auto_mine_failure
+docker build -f docker/lightwalletd.Dockerfile -t ths-recovery-lightwalletd:local .
+cargo test --locked --profile dev-runtime -p ths-server --test activity_recovery -- --ignored --exact broadcast_recovers_after_auto_mine_failure
 ```
 
 The first command compiles the integration target. The second runs its
 Docker-free helper coverage and leaves the ignored live regression unexecuted.
 The last command explicitly selects the live regression; Cargo supplies that
-target with the matching source-built `tsz-server` binary, including when
+target with the matching source-built `ths-server` binary, including when
 `CARGO_TARGET_DIR` is set. Do not substitute an installed or older binary.
 
-The live test owns a UUID-prefixed `tsz-recovery-*` Docker network, containers,
+The live test owns a UUID-prefixed `ths-recovery-*` Docker network, containers,
 and volumes, plus private temporary data/configuration directories, a local RPC
 proxy, and a local server process. It sends a genuine 1,000,000-zatoshi (0.01
 ZEC) Orchard payment from Account 1 to Account 2, deliberately rejects exactly
@@ -304,7 +304,7 @@ production-code edit.
 ## How it fits together
 
 ```text
-Browser ──HTTP/SSE── tsz-server ──JSON-RPC── Zakura (Regtest)
+Browser ──HTTP/SSE── ths-server ──JSON-RPC── Zakura (Regtest)
                          │                       │
                          └──────gRPC──── lightwalletd
 ```
