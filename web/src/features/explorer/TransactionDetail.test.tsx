@@ -75,6 +75,36 @@ describe('TransactionDetail', () => {
     expect(screen.getByText('1 ZEC')).toBeInTheDocument();
   });
 
+  it('renders two inputs spending different outputs of the same previous transaction', async () => {
+    const otherAddress = 'tmBnC1iW276Njs86Lfp7y7qwUit55wG5bDm';
+    renderTx({
+      txid: TXID,
+      vin: [
+        {
+          txid: PREV_TXID,
+          vout: 0,
+          valueZat: 100_000_000,
+          scriptPubKey: { addresses: [INPUT_ADDRESS] },
+        },
+        {
+          txid: PREV_TXID,
+          vout: 2,
+          valueZat: 25_000_000,
+          scriptPubKey: { addresses: [otherAddress] },
+        },
+      ],
+      vout: [{ n: 0, valueZat: 120_000_000, scriptPubKey: { addresses: [] } }],
+      vShieldedSpend: [],
+      vShieldedOutput: [],
+    });
+
+    await waitFor(() => expect(screen.getByText('2 transparent inputs')).toBeInTheDocument());
+    expect(screen.getByText(INPUT_ADDRESS)).toBeInTheDocument();
+    expect(screen.getByText('1 ZEC')).toBeInTheDocument();
+    expect(screen.getByText(otherAddress)).toBeInTheDocument();
+    expect(screen.getByText('0.25 ZEC')).toBeInTheDocument();
+  });
+
   it('labels a coinbase input instead of inventing an address', async () => {
     renderTx({
       txid: TXID,
