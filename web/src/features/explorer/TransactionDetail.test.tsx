@@ -76,6 +76,10 @@ describe('TransactionDetail', () => {
   });
 
   it('renders two inputs spending different outputs of the same previous transaction', async () => {
+    // Both rows render their content regardless of key collisions, so only a
+    // console warning actually catches a regression back to keying on txid
+    // alone, which is the key that collided for these two inputs.
+    const consoleError = vi.spyOn(console, 'error').mockImplementation(() => {});
     const otherAddress = 'tmBnC1iW276Njs86Lfp7y7qwUit55wG5bDm';
     renderTx({
       txid: TXID,
@@ -103,6 +107,11 @@ describe('TransactionDetail', () => {
     expect(screen.getByText('1 ZEC')).toBeInTheDocument();
     expect(screen.getByText(otherAddress)).toBeInTheDocument();
     expect(screen.getByText('0.25 ZEC')).toBeInTheDocument();
+
+    const duplicateKeyWarning = consoleError.mock.calls.some(([message]) =>
+      String(message).includes('two children with the same key'),
+    );
+    expect(duplicateKeyWarning).toBe(false);
   });
 
   it('labels a coinbase input instead of inventing an address', async () => {
